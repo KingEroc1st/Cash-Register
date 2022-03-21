@@ -1,0 +1,109 @@
+function checkCashRegister(price, cash, cid) {
+
+let change = cash - price; 
+let cidtotal = 0;
+let changearr = [];   //change to be returned
+let stat = "";        //status display
+let changedue = 0;    //change available to be returned
+let payable = change;  //change yet to pay
+
+//FIND TOTAL CID
+for (let i=cid.length-1; i>0; i--){
+   cidtotal += cid[i][1]   
+}
+
+//FIND CHANGE DUE
+if(change >= 20){
+  for (let i=cid.length-2; i>=0; i--){changedue += cid[i][1]}
+}
+else if (change>= 10 && change < 20){
+  for (let i=cid.length-3; i>=0; i--){changedue += cid[i][1]}
+}
+else if (change>= 5 && change < 10){
+  for (let i=cid.length-4; i>=0; i--){changedue += cid[i][1]}
+}
+else if (change>= 1 && change < 5){
+  for (let i=cid.length-5; i>=0; i--){changedue += cid[i][1]}
+}
+else if (change>= 0.25 && change < 1){
+  for (let i=cid.length-6; i>=0; i--){changedue += cid[i][1]}
+}
+else if (change>= 0.10 && change < 0.25){
+  for (let i=cid.length-7; i>=0; i--){changedue += cid[i][1]}
+}
+else if (change>= 0.05 && change < 0.10){
+  for (let i=cid.length-8; i>=0; i--){changedue += cid[i][1]}
+}
+else if (change>= 0.01 && change < 0.05){
+  for (let i=cid.length-9; i>=0; i--){changedue += cid[i][1]}
+}
+else{
+  changedue = cid[0][1]
+}
+
+//FIND STAT
+if (changedue > change){
+  stat = "OPEN";
+}
+else if (changedue === change || cidtotal === change){
+  stat = "CLOSED";
+}
+else if (changedue < change || cidtotal < change){
+  stat = "INSUFFICIENT_FUNDS";
+}
+
+//FIND RETURN CHANGE ARRAY
+if (stat === "INSUFFICIENT_FUNDS"){
+  changearr.push();
+}
+else if (stat === "CLOSED"){
+  for (let i=0; i<cid.length; i++){changearr.push(cid[i]);} 
+}
+else if (stat === "OPEN") {  
+   for(let i=cid.length-2;i>=0;i--){
+    if (payable>0 && payable>cid[i][1]){         
+         changearr.push(cid[i]);
+         payable -= cid[i][1];      
+        //  console.log(payable)
+    } 
+    else if (payable>0 && payable<cid[i][1] && payable>5){
+        changearr.push(["FIVE",Math.floor(payable/5)*5])
+        payable = payable-Math.floor(payable/5)*5        
+    }
+    else if (payable>0 && payable<cid[i][1] && payable>1 && payable<5){
+        changearr.push(["ONE",Math.floor(payable/1)*1])
+        payable = payable-Math.floor(payable/1)*1  
+    }
+    else if (payable>0 && payable<cid[i][1] && payable>0.25 && payable<1){
+        changearr.push(["QUARTER",Math.floor(payable/0.25)*0.25])
+        payable = payable-Math.floor(payable/0.25)*0.25    
+    }
+    else if (payable>0 && payable<cid[i][1] && payable>0.10 && payable<0.25){
+        changearr.push(["DIME",Math.floor(payable/0.1)*0.1])
+        payable = payable-Math.floor(payable/0.1)*0.1
+    }
+    else if (payable>0 && payable<cid[i][1] && payable>0.05 && payable<0.10){
+        changearr.push(["NICKLE",Math.floor(payable/0.05)*0.05])
+        payable = payable-Math.floor(payable/0.05)*0.05
+    }
+    else if (payable>0 && payable<cid[i][1] && payable>0.01 && payable<0.05){
+        changearr.push(["PENNY",Math.ceil(payable/0.01)*0.01])
+        payable = payable-Math.ceil(payable/0.01)*0.01
+    }}}
+  
+// console.log(`{status: "` + stat + `", change: [` + changearr + `]}`)
+// console.log(changedue)
+// console.log(`{status: "` + stat +)
+// console.log({status: stat, change: changearr})
+return {status: stat, change: changearr}
+}
+
+
+
+
+
+
+
+  
+
+checkCashRegister(19.5, 20, [["PENNY", 0.5], ["NICKEL", 0], ["DIME", 0], ["QUARTER", 0], ["ONE", 0], ["FIVE", 0], ["TEN", 0], ["TWENTY", 0], ["ONE HUNDRED", 0]]);
